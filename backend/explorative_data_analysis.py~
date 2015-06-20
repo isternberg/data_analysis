@@ -18,10 +18,9 @@ display.head()
 prostitution_row
 prostitution_row.T.describe()
 
-pgroup=df['Category'].groupby(df['PdDistrict'])
-a = pgroup.count().to_frame()
-a.columns=["Sum_of_crimes"]
-
+pgroup=df.groupby(['PdDistrict'])
+pmin = pgroup.Category.min
+pmax = pgroup.Category.max
 
 
 
