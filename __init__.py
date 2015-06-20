@@ -2,18 +2,11 @@
 This file is part of the flask+d3 Hello World project.
 """
 import json
-
 import flask
 from flask import request
 import numpy as np
-from flask_flatpages import FlatPages
-from flask_frozen import Freezer
 
 app = flask.Flask(__name__)
-app.config.from_pyfile('settings.py')
-pages = FlatPages(app)
-freezer = Freezer(app)
-
 
 @app.route("/index")
 def index():

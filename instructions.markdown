@@ -1,4 +1,4 @@
-# flask+d3 with GitHub-Pages
+# flask+d3
 
 ### author
 
@@ -18,4 +18,4 @@ Adapted from [flask-d3-hello-world](https://github.com/dfm/flask-d3-hello-world)
 
 2. Execute:
 
-    python __init__.py
+    python '__init__'.py
