@@ -4,13 +4,26 @@ import numpy as np
 from matplotlib import pylab, mlab, pyplot
 plt = pyplot
 
-df = pd.read_csv("./crime_train.csv")
+df = pd.read_csv("../crime_train.csv")
 
 ct = pd.crosstab(df.Category, df.DayOfWeek)
 display = ct.ix[:,['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']] 
 print(display)
-prosti = display.ix[23:24] 
-print(prosti)
+prostitution_row = display.ix[23:24] 
+print(prostitution_row)
+print(prostitution_row.T)
+print(prostitution_row.T.describe)
+
+display.head()
+prostitution_row
+prostitution_row.T.describe()
+
+pgroup=df['Category'].groupby(df['PdDistrict'])
+a = pgroup.count().to_frame()
+a.columns=["Sum_of_crimes"]
+
+
+
 
 ct = pd.crosstab(df.DayOfWeek, df.Category)
 ct.values
