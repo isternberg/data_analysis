@@ -4,6 +4,8 @@ from matplotlib import pylab, mlab, pyplot
 plt = pyplot
 
 df = pd.read_csv("../crime_train.csv")
+df = df.reindex(np.random.permutation(df.index))
+# TODO: now remove the test data!
 
 def getYear(s):
   return s.split("-")[0]
@@ -12,6 +14,12 @@ def getMonth(s):
 
 df['Year']= df['Dates'].apply(lambda x: getYear(x))
 df['Month']= df['Dates'].apply(lambda x: getMonth(x))
+df['Year'] = df['Year'].apply(int)
+df['Month'] = df['Month'].apply(int)
+# remove the data for the year 2015, as the year is not yet over
+df = df[df.Year != 2015]
+
+
 years = df.Year.unique()
 years
 ct = pd.crosstab(df.Category, df.Year)
@@ -26,7 +34,7 @@ crime_by_month = df.groupby('Month').Category.count()
 
 
 
-df['Month'] = df['Month'].apply(int)
+# df['Month'] = df['Month'].apply(int)
 seasons = ['Winter', 'Spring', 'Summer', 'Fall']
 month_bins = pd.cut(df.Month, [df.Month.min(), 4, 7, 10, df.Month.max()], labels = seasons)
 
