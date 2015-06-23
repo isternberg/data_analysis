@@ -23,13 +23,16 @@ a.plot()
 crime_by_year = df.groupby('Year').Category.count()
 crime_by_month = df.groupby('Month').Category.count()
 
-data = df.groupby([month_bins,'Month']).Category.count()
-data2 = df.groupby([month_bins,'DayOfWeek']).Category.count()
+
 
 
 df['Month'] = df['Month'].apply(int)
 seasons = ['Winter', 'Spring', 'Summer', 'Fall']
 month_bins = pd.cut(df.Month, [df.Month.min(), 4, 7, 10, df.Month.max()], labels = seasons)
+
+data = df.groupby([month_bins,'Month']).Category.count()
+data2 = df.groupby([month_bins,'DayOfWeek']).Category.count()
+
 groups = df.groupby(month_bins)
 seasons_view = groups.Category.count()
 seasons_view
