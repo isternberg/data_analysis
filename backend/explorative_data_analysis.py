@@ -5,6 +5,9 @@ from matplotlib import pylab, mlab, pyplot
 plt = pyplot
 
 df = pd.read_csv("../crime_train.csv")
+df = df.reindex(np.random.permutation(df.index))
+# TODO: now remove the test data!
+
 
 ct = pd.crosstab(df.Category, df.DayOfWeek)
 display = ct.ix[:,['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']] 
@@ -18,8 +21,7 @@ display.head()
 prostitution_row
 prostitution_row.T.describe()
 
-pgroup=df['Category'].groupby(df['PdDistrict'])
-a = pgroup.count().to_frame()
+a = df.groupby('PdDistrict').Category.count().to_frame()
 a.columns=["Sum_of_crimes"]
 
 
