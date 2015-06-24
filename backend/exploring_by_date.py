@@ -4,9 +4,8 @@ from matplotlib import pylab, mlab, pyplot
 plt = pyplot
 
 df = pd.read_csv("../crime_train.csv")
-df = df.reindex(np.random.permutation(df.index))
-# TODO: now remove the test data!
-
+# split the Dates column to Year and Month in order to remove
+# the data for 2015, which is incomplete
 def getYear(s):
   return s.split("-")[0]
 def getMonth(s):
@@ -16,32 +15,43 @@ df['Year']= df['Dates'].apply(lambda x: getYear(x))
 df['Month']= df['Dates'].apply(lambda x: getMonth(x))
 df['Year'] = df['Year'].apply(int)
 df['Month'] = df['Month'].apply(int)
-# remove the data for the year 2015, as the year is not yet over
+# remove the data for the year 2015
 df = df[df.Year != 2015]
-
-
+#test is the yeaar 2015 was really removed
 years = df.Year.unique()
 years
-ct = pd.crosstab(df.Category, df.Year)
+# shufle the data
+df = df.reindex(np.random.permutation(df.index))
+# keep 80% of the data for training. The other 20% will be testing data
+training_len = int(len(df)* 0.8)
+testing_len = len(df) -training_len
+df_train = df.head(training_len)
+df_test = df.tail(testing_len)
+df_train.to_csv("../df_train.csv",  encoding='utf-8')
+df_test.to_csv("../df_test.csv",  encoding='utf-8')
+
+
+ct = pd.crosstab(df_train.Category, df_train.Year)
 a = ct.ix[23:24].T
 a
 a.describe()
 a.plot()
 
-crime_by_year = df.groupby('Year').Category.count()
-crime_by_month = df.groupby('Month').Category.count()
-
+crime_by_year = df_train.groupby('Year').Category.count()
+crime_by_year.plot()
+crime_by_month = df_train.groupby('Month').Category.count()
+crime_by_month.plot()
 
 
 
 # df['Month'] = df['Month'].apply(int)
 seasons = ['Winter', 'Spring', 'Summer', 'Fall']
-month_bins = pd.cut(df.Month, [df.Month.min(), 4, 7, 10, df.Month.max()], labels = seasons)
+month_bins = pd.cut(df_train.Month, [df_train.Month.min(), 4, 7, 10, df_train.Month.max()], labels = seasons)
 
-data = df.groupby([month_bins,'Month']).Category.count()
-data2 = df.groupby([month_bins,'DayOfWeek']).Category.count()
+data = df_train.groupby([month_bins,'Month']).Category.count()
+data2 = df_train.groupby([month_bins,'DayOfWeek']).Category.count()
 
-groups = df.groupby(month_bins)
+groups = df_train.groupby(month_bins)
 seasons_view = groups.Category.count()
 seasons_view
 seasons_view.plot(kind='bar')
@@ -55,19 +65,19 @@ ax.set_title("Count of foo by bar and bla")
 data2.unstack(level=1).plot(kind='bar', subplots=False, ax=ax)
 
 
-var = df.groupby(['DayOfWeek','Year']).Month.count()
+var = df_train.groupby(['DayOfWeek','Year']).Month.count()
 ax = var.unstack().plot(kind='bar',stacked=True,  color=['red','blue','green', 'yellow', 'white'
 , 'black', 'orange', 'pink', 'purple', 'brown', 'grey', 'gold'], grid=False)
 ax.set_xlabel('Age')
 ax.set_ylabel('Number of Passengers')
 
-var = df.groupby(['Year','DayOfWeek']).Month.count()
+var = df_train.groupby(['Year','DayOfWeek']).Month.count()
 ax = var.unstack().plot(kind='bar',stacked=True,  color=['red','blue','green', 'yellow', 'orange', 'pink', 'purple', 'white'], grid=False)
 ax.set_xlabel('Year')
 ax.set_ylabel('Number of Crimes')
-data = df.groupby([month_bins,'Year']).Category.count()
+data = df_train.groupby([month_bins,'Year']).Category.count()
 data
-data2 = df.groupby([month_bins,'DayOfWeek']).Category.count()
+data2 = df_train.groupby([month_bins,'DayOfWeek']).Category.count()
 data2
 
 
