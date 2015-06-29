@@ -21,8 +21,8 @@ display.head()
 prostitution_row
 prostitution_row.T.describe()
 
-a = df.groupby('PdDistrict').Category.count().to_frame()
-a.columns=["Sum_of_crimes"]
+crimes_count_by_district = df.groupby('PdDistrict').Category.count().to_frame()
+crimes_count_by_district.columns=["Sum_of_crimes"]
 
 
 
