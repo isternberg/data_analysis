@@ -1,69 +1,125 @@
-
 import pandas as pd
 import numpy as np
 from matplotlib import pylab, mlab, pyplot
 plt = pyplot
 
 df = pd.read_csv("../crime_train.csv")
+# split the Dates column to Year and Month in order to remove
+# the data for 2015, which is incomplete
+def getYear(s):
+  return s.split("-")[0]
+def getMonth(s):
+  return s.split("-")[1]
+
+df['Year']= df['Dates'].apply(lambda x: getYear(x))
+df['Month']= df['Dates'].apply(lambda x: getMonth(x))
+df['Year'] = df['Year'].apply(int)
+df['Month'] = df['Month'].apply(int)
+# remove the data for the year 2015
+df = df[df.Year != 2015]
+#test is the yeaar 2015 was really removed
+years = df.Year.unique()
+years
+
+# shufle the data
 df = df.reindex(np.random.permutation(df.index))
-# TODO: now remove the test data!
+# keep 80% of the data for training. The other 20% will be testing data
+training_len = int(len(df)* 0.8)
+testing_len = len(df) -training_len
+df_train = df.head(training_len)
+df_test = df.tail(testing_len)
+#df_train.to_csv("../df_train.csv",  encoding='utf-8')
+#df_test.to_csv("../df_test.csv",  encoding='utf-8')
 
 
-ct = pd.crosstab(df.Category, df.DayOfWeek)
+
+ct = pd.crosstab(df_train.Category, df_train.DayOfWeek)
 display = ct.ix[:,['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']] 
-print(display)
+display
 prostitution_row = display.ix[23:24] 
-print(prostitution_row)
-print(prostitution_row.T)
-print(prostitution_row.T.describe)
-
 display.head()
 prostitution_row
 prostitution_row.T.describe()
 
-crimes_count_by_district = df.groupby('PdDistrict').Category.count().to_frame()
+# TODO: edit this plot
+crimes_count_by_district = df_train.groupby('PdDistrict').Category.count().to_frame()
 crimes_count_by_district.columns=["Sum_of_crimes"]
+crimes_count_by_district.plot()
+
+
+
+ct = pd.crosstab(df_train.Category, df_train.Year)
+prostitution = ct.ix[23:24].T
+prostitution
+prostitution.describe()
+ax = prostitution.plot(lw=2,colormap='jet',marker='.',markersize=10,title='Prostitution in San Fransico 2003 - 2014')
+ax.set_ylabel("count")
+ax.set_xlabel("year")
+
+crime_by_year = df_train.groupby('Year').Category.count()
+ax = crime_by_year.plot(lw=2,colormap='jet',marker='.',markersize=10,title='Crime in San Fransico 2003 - 2014')
+ax.set_ylabel("count")
+ax.set_xlabel("year")
+
+crime_by_month = df_train.groupby('Month').Category.count()
+ax = crime_by_month.plot(kind='bar',title='Crime in San Fransico by month (2003-2014)')
+ax.set_ylabel("count")
+ax.set_xlabel("month")
+
+# Corr and Cov
+ct = pd.crosstab(df_train.Year, df_train.Category)
+ct.DRUNKENNESS.corr(ct.VANDALISM)
+ct.DRUNKENNESS.cov(ct.VANDALISM)
+
+ct.corr().head(3).T
+ct.cov().head(3).T
+ct.corrwith(ct.VANDALISM)
+ax = ct.corr().head(3).T[0:3].plot(lw=2,colormap='jet',marker='.',markersize=10,title='Correlation between 3 crimes (2003-2014)')
+ax.set_ylabel("correlation")
+ax.set_xlabel("category")
+
+# could be nice to understand this plot someday
+%pylab qt4
+plt.scatter(ct.DRUNKENNESS, ct.VANDALISM) 
+plt.xlabel('change of Drunkness??')
+plt.ylabel('change of vandalism??')
+
+
+# df['Month'] = df['Month'].apply(int)
+seasons = ['Winter', 'Spring', 'Summer', 'Fall']
+month_bins = pd.cut(df_train.Month, [df_train.Month.min(), 4, 7, 10, df_train.Month.max()], labels = seasons)
+
+data = df_train.groupby([month_bins,'Month']).Category.count()
+data2 = df_train.groupby([month_bins,'DayOfWeek']).Category.count()
+
+groups = df_train.groupby(month_bins)
+seasons_view = groups.Category.count()
+seasons_view
+ax = seasons_view.plot(kind='bar',title='Crime in San Fransico by season (2003-2014)')
+ax.set_ylabel("count")
+ax.set_xlabel("season")
+plt.tight_layout()
+
+
+fig = pyplot.figure(figsize=(8,4))
+ax = fig.add_subplot(111)
+ax.set_ylabel("count")
+ax.set_xlabel("season")  # how come xlabel in plot = month?
+data2.unstack(level=1).plot(kind='bar', subplots=False, ax=ax, title="Crime in San Fransico by season and day (2003-2014)")
+plt.tight_layout()
+
+#inspiration for plot: https://www.kaggle.com/ldocao/sf-crime/exploratory-horizontal-bar-plots
+categories = df.groupby("Category")
+count = categories.count()
+plt.figure()
+plt.xlabel("count")
+count.sort(columns="X",ascending=1)["X"].plot(kind="barh") 
+plt.tight_layout() 
+#plt.savefig("categories_count")
 
 
 
 
-ct = pd.crosstab(df.DayOfWeek, df.Category)
-ct.values
-tmp = ct.values
 
-# Following 4 functions are taken from 
-# http://christianherta.de/lehre/dataScience/machineLearning/decision-trees.php
-def p_log_p(p_):
-  p = p_.copy()
-  p[p != 0] = - p[p != 0] * np.log2(p[p != 0] )
-  return p
 
-def entropy(p):
-  assert (p>=0.).all()
-  assert np.allclose(1., p.sum(), atol=1e-08)
-  return p_log_p(p).sum()
-  
-def conditional_entropy(p, axis=0):
-  if axis == 1:
-    p = p.T
-  p_y_given_x = p / p.sum(axis=0)
-  c = p_log_p(p_y_given_x) 
-  p_x = p.sum(axis=0)/p.sum()
-  s = c * p_x
-  return s.sum()
- 
-def information_gain(p0, axis = 0):
-  p = p0.copy()
-  if axis == 1:
-    p = p.T
-  p_ = p.sum(axis=1)
-  return entropy(p_) - conditional_entropy(p)
 
-p = tmp * 1.0 /tmp.sum()
-p_ = p.sum(axis=1)
-entropy(p_)
-conditional_entropy(p)
-information_gain(p)
-
-gain = information_gain(p) / entropy(p_)
-print(gain)
