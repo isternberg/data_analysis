@@ -21,15 +21,6 @@ df['Hour'] = df['Hour'].apply(int)
 df = df.reindex(np.random.permutation(df.index))
 # TODO: now remove the test data! (or just use the training data..)
 
-# count of each crime category by DayOfWeek
-ct = pd.crosstab(df.DayOfWeek, df.Category)
-data = ct.values
-
-ct2 = pd.crosstab(df.Hour, df.Category)
-data2 = ct2.values
-
-ct3 = pd.crosstab(df.PdDistrict, df.Category)
-data3 = ct3.values
 
 # Following 4 functions are taken from 
 # http://christianherta.de/lehre/dataScience/machineLearning/decision-trees.php
@@ -59,6 +50,10 @@ def information_gain(p0, axis = 0):
   p_ = p.sum(axis=1)
   return entropy(p_) - conditional_entropy(p)
 
+# count of each crime category by DayOfWeek
+ct = pd.crosstab(df.DayOfWeek, df.Category)
+data = ct.values
+
 # probability of each crime category by DayOfWeek
 p = data * 1.0 /data.sum()
 # probability of each day (sum of all crimes)
@@ -71,18 +66,25 @@ information_gain(p) # 0.005
 #gain = information_gain(p) / entropy(p_) # ?
 #print(gain)
 
+
 #information gain category,hour
+ct2 = pd.crosstab(df.Hour, df.Category)
+data2 = ct2.values
 p2 = data2 * 1.0 /data2.sum()
-p_ = p2.sum(axis=1)
 information_gain(p2) # 0.05
 
+
 #information gain category, district
+ct3 = pd.crosstab(df.PdDistrict, df.Category)
+data3 = ct3.values
 p3 = data3 * 1.0 /data3.sum()
-p_ = p2.sum(axis=1)
 information_gain(p3) # 0.094
 
-
-
+#information gain category, month
+ct4 = pd.crosstab(df.Month, df.Category)
+data4 = ct4.values
+p4 = data4 * 1.0 /data4.sum()
+information_gain(p4) # 0.001
 
 
 

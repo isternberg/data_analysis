@@ -4,7 +4,7 @@ from matplotlib import pylab, mlab, pyplot
 plt = pyplot
 
 df = pd.read_csv("../crime_train.csv")
-# split the Dates column to Year and Month in order to remove
+# split the Dates column in order to remove
 # the data for 2015, which is incomplete
 def getYear(s):
   return s.split("-")[0]
