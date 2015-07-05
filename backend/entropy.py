@@ -5,13 +5,31 @@ from matplotlib import pylab, mlab, pyplot
 plt = pyplot
 
 df = pd.read_csv("../crime_train.csv")
+def getMonth(s):
+  return s.split("-")[1]
+def getHour(s):
+  tmp = s.split(" ")[1]
+  return tmp.split(":")[0]
+
+df['Month']= df['Dates'].apply(lambda x: getMonth(x))
+df['Hour']= df['Dates'].apply(lambda x: getHour(x))
+df['Month'] = df['Month'].apply(int)
+df['Hour'] = df['Hour'].apply(int)
+
+
+# shuffle the data - later we will just take the training data
 df = df.reindex(np.random.permutation(df.index))
-# TODO: now remove the test data!
+# TODO: now remove the test data! (or just use the training data..)
 
-
+# count of each crime category by DayOfWeek
 ct = pd.crosstab(df.DayOfWeek, df.Category)
-ct.values
-tmp = ct.values
+data = ct.values
+
+ct2 = pd.crosstab(df.Hour, df.Category)
+data2 = ct2.values
+
+ct3 = pd.crosstab(df.PdDistrict, df.Category)
+data3 = ct3.values
 
 # Following 4 functions are taken from 
 # http://christianherta.de/lehre/dataScience/machineLearning/decision-trees.php
@@ -41,11 +59,30 @@ def information_gain(p0, axis = 0):
   p_ = p.sum(axis=1)
   return entropy(p_) - conditional_entropy(p)
 
-p = tmp * 1.0 /tmp.sum()
+# probability of each crime category by DayOfWeek
+p = data * 1.0 /data.sum()
+# probability of each day (sum of all crimes)
 p_ = p.sum(axis=1)
-entropy(p_)
+# entropy and conditional entropy are used to calculate the information gain
+entropy(p_) # can is be > 1?
 conditional_entropy(p)
-information_gain(p)
+information_gain(p) # 0.005
 
-gain = information_gain(p) / entropy(p_)
-print(gain)
+#gain = information_gain(p) / entropy(p_) # ?
+#print(gain)
+
+#information gain category,hour
+p2 = data2 * 1.0 /data2.sum()
+p_ = p2.sum(axis=1)
+information_gain(p2) # 0.05
+
+#information gain category, district
+p3 = data3 * 1.0 /data3.sum()
+p_ = p2.sum(axis=1)
+information_gain(p3) # 0.094
+
+
+
+
+
+
