@@ -1,26 +1,9 @@
-
 import pandas as pd
 import numpy as np
 from matplotlib import pylab, mlab, pyplot
 plt = pyplot
 
-df = pd.read_csv("../crime_train.csv")
-def getMonth(s):
-  return s.split("-")[1]
-def getHour(s):
-  tmp = s.split(" ")[1]
-  return tmp.split(":")[0]
-
-df['Month']= df['Dates'].apply(lambda x: getMonth(x))
-df['Hour']= df['Dates'].apply(lambda x: getHour(x))
-df['Month'] = df['Month'].apply(int)
-df['Hour'] = df['Hour'].apply(int)
-
-
-# shuffle the data - later we will just take the training data
-df = df.reindex(np.random.permutation(df.index))
-# TODO: now remove the test data! (or just use the training data..)
-
+df = pd.read_csv("../df_train.csv")
 
 # Following 4 functions are taken from 
 # http://christianherta.de/lehre/dataScience/machineLearning/decision-trees.php
@@ -78,13 +61,13 @@ information_gain(p2) # 0.05
 ct3 = pd.crosstab(df.PdDistrict, df.Category)
 data3 = ct3.values
 p3 = data3 * 1.0 /data3.sum()
-information_gain(p3) # 0.094
+information_gain(p3) # 0.095
 
 #information gain category, month
 ct4 = pd.crosstab(df.Month, df.Category)
 data4 = ct4.values
 p4 = data4 * 1.0 /data4.sum()
-information_gain(p4) # 0.001
+information_gain(p4) # 0.002
 
 
 

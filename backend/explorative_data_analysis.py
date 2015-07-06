@@ -33,8 +33,8 @@ training_len = int(len(df)* 0.8)
 testing_len = len(df) -training_len
 df_train = df.head(training_len)
 df_test = df.tail(testing_len)
-#df_train.to_csv("../df_train.csv",  encoding='utf-8')
-#df_test.to_csv("../df_test.csv",  encoding='utf-8')
+df_train.to_csv("../df_train.csv",  encoding='utf-8')
+df_test.to_csv("../df_test.csv",  encoding='utf-8')
 
 
 # count of each crime category by day of week
@@ -135,7 +135,22 @@ count.sort(columns="X",ascending=1)["X"].plot(kind="barh")
 plt.tight_layout() 
 #plt.savefig("categories_count")
 
+#maybe we could do smth like this?
+import matplotlib.dates as mdates
+from mpl_toolkits.mplot3d import Axes3D
+matplotlib.rcParams['font.size'] = 10;
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+for z in [df_train.Year.unique()]:
+  xs = xrange(1,13)
+  ys = 1000 * np.random.rand(12)
+  color = plt.cm.Set2(random.choice(xrange(plt.cm.Set2.N)))
+  ax.bar(xs, ys,zs=z, zdir='y', color=color, alpha=0.8)
 
+ax.set_xlabel('Month')
+ax.set_ylabel('Year')
+ax.set_zlabel('Sales')
+plt.show()
 
 
 
