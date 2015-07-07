@@ -14,12 +14,10 @@ def getHour(s):
   tmp = s.split(" ")[1]
   return tmp.split(":")[0]
 
-df['Year']= df['Dates'].apply(lambda x: getYear(x))
-df['Month']= df['Dates'].apply(lambda x: getMonth(x))
-df['Hour']= df['Dates'].apply(lambda x: getHour(x))
-df['Year'] = df['Year'].apply(int)
-df['Month'] = df['Month'].apply(int)
-df['Hour'] = df['Hour'].apply(int)
+df['Year']= df['Dates'].apply(lambda x: getYear(x)).apply(int)
+df['Month']= df['Dates'].apply(lambda x: getMonth(x)).apply(int)
+df['Hour']= df['Dates'].apply(lambda x: getHour(x)).apply(int)
+
 # remove the data for the year 2015
 df = df[df.Year != 2015]
 #test is the yeaar 2015 was really removed
