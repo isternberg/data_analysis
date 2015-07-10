@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
-from matplotlib import pylab, mlab, pyplot
-plt = pyplot
+
 
 df = pd.read_csv("../df_train.csv")
 
