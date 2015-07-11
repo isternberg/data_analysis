@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pylab, mlab, pyplot
 plt = pyplot
 
-df_train = pd.read_csv("../df_train.csv")
+df_train = pd.read_csv("../../df_train.csv")
 
 
 # count of each crime category by day of week
@@ -72,7 +72,7 @@ plt.show()
 
 
 # could be nice to understand this plot someday
-%pylab qt4
+#%pylab qt4
 plt.scatter(ct.DRUNKENNESS, ct.VANDALISM) 
 plt.xlabel('change of Drunkness??')
 plt.ylabel('change of vandalism??')
@@ -91,6 +91,7 @@ seasons_view
 ax = seasons_view.plot(kind='bar',title='Crime in San Fransico by season (2003-2014)')
 ax.set_ylabel("count")
 ax.set_xlabel("season")
+pylab.ylim(0, 200000)
 plt.tight_layout()
 plt.show()
 
@@ -103,7 +104,7 @@ plt.tight_layout()
 plt.show()
 
 #inspiration for plot: https://www.kaggle.com/ldocao/sf-crime/exploratory-horizontal-bar-plots
-categories = df.groupby("Category")
+categories = df_train.groupby("Category")
 count = categories.count()
 plt.figure()
 plt.xlabel("count")
