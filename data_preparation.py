@@ -3,7 +3,7 @@ import numpy as np
 from sklearn import cross_validation
 import numpy.testing as npt
 
-df = pd.read_csv("../../crime_train.csv")
+df = pd.read_csv("../crime_train.csv")
 # split the Dates column in order to remove
 # the data for 2015, which is incomplete
 def getYear(s):
@@ -21,7 +21,7 @@ df['Hour']= df['Dates'].apply(lambda x: getHour(x)).apply(int)
 
 # remove the data for the year 2015
 df = df[df.Year != 2015]
-#test is the yeaar 2015 was really removed
+#test is the year 2015 was really removed
 years = df.Year.unique()
 years
 # test that 2015 is no longer there
@@ -45,7 +45,7 @@ df_test = df.tail(testing_len)
 # test that now rows were added or removed
 npt.assert_equal(len(df), len(df_train) + len(df_test))
 # save the new training data as a file
-df_train.to_csv("../../df_train.csv",  encoding='utf-8')
+df_train.to_csv("../df_train.csv",  encoding='utf-8')
 
 
 

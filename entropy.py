@@ -41,28 +41,28 @@ p = data * 1.0 /data.sum()
 # probability of each day (sum of all crimes)
 p_ = p.sum(axis=1)
 # entropy and conditional entropy are used to calculate the information gain
-entropy(p_) 
-conditional_entropy(p)
-information_gain(p) # 0.005
+print(entropy(p_))
+print(conditional_entropy(p))
+print(information_gain(p)) # 0.005
 
 #information gain category,hour
 ct2 = pd.crosstab(df.Hour, df.Category)
 data2 = ct2.values
 p2 = data2 * 1.0 /data2.sum()
-information_gain(p2) # 0.05
+print(information_gain(p2)) # 0.05
 
 
 #information gain category, district
 ct3 = pd.crosstab(df.PdDistrict, df.Category)
 data3 = ct3.values
 p3 = data3 * 1.0 /data3.sum()
-information_gain(p3) # 0.095
+print(information_gain(p3)) # 0.095
 
 #information gain category, month
 ct4 = pd.crosstab(df.Month, df.Category)
 data4 = ct4.values
 p4 = data4 * 1.0 /data4.sum()
-information_gain(p4) # 0.002
+print(information_gain(p4)) # 0.002
 
 
 

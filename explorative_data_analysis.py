@@ -3,18 +3,18 @@ import numpy as np
 from matplotlib import pylab, mlab, pyplot
 plt = pyplot
 
-df_train = pd.read_csv("../../df_train.csv")
+df_train = pd.read_csv("../df_train.csv")
 
 
 # count of each crime category by day of week
 ct = pd.crosstab(df_train.Category, df_train.DayOfWeek)
 display = ct.ix[:,['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']] 
-display
+print(display)
 # count of prostitution cases by day (for the entire period 2003 - 2014)
 prostitution_row = display.ix[23:24] 
-prostitution_row
+print(prostitution_row)
 # statistical data to prostitution (by day)
-prostitution_row.T.describe()
+print(prostitution_row.T.describe())
 
 # TODO add the threshhold of avg
 # Crime in San Fransico 2003 - 2014 by district
@@ -30,8 +30,8 @@ plt.show()
 # Prostitution in San Fransico 2003 - 2014
 ct = pd.crosstab(df_train.Category, df_train.Year)
 prostitution = ct.ix[23:24].T
-prostitution
-prostitution.describe()
+print(prostitution)
+print(prostitution.describe())
 ax = prostitution.plot(lw=2,colormap='jet',marker='.',markersize=10,title='Prostitution in San Fransico 2003 - 2014')
 ax.set_ylabel("count")
 ax.set_xlabel("year")
@@ -76,7 +76,7 @@ plt.show()
 plt.scatter(ct.DRUNKENNESS, ct.VANDALISM) 
 plt.xlabel('change of Drunkness??')
 plt.ylabel('change of vandalism??')
-
+plt.show()
 
 # df['Month'] = df['Month'].apply(int)
 seasons = ['Winter', 'Spring', 'Summer', 'Fall']
@@ -87,7 +87,7 @@ data2 = df_train.groupby([month_bins,'DayOfWeek']).Category.count()
 
 groups = df_train.groupby(month_bins)
 seasons_view = groups.Category.count()
-seasons_view
+print(seasons_view)
 ax = seasons_view.plot(kind='bar',title='Crime in San Fransico by season (2003-2014)')
 ax.set_ylabel("count")
 ax.set_xlabel("season")
