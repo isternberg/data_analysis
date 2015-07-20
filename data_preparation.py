@@ -47,7 +47,14 @@ npt.assert_equal(len(df), len(df_train) + len(df_test))
 # save the new training data as a file
 df_train.to_csv("../df_train.csv",  encoding='utf-8')
 
-
+#remove the crimes, which have less than 100 instances in the training data
+tmp =df_train.groupby("Category").count().sort_index(by=['Year'], ascending=[True])
+tmp = tmp.iloc[:,[0]]
+print(tmp)
+df_train = df_train[df_train.Category != "TREA"]
+df_train = df_train[df_train.Category != "PORNOGRAPHY/OBSCENE MAT"]
+df_test = df_test[df_test.Category != "TREA"]
+df_test = df_test[df_test.Category != "PORNOGRAPHY/OBSCENE MAT"]
 
 # keep only the columns that are interesting for the prediction
 def reduce_to_relevant_columns(dataframe):

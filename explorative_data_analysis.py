@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from matplotlib import pylab, mlab, pyplot
 plt = pyplot
-
+from pylab import *
 df_train = pd.read_csv("../df_train.csv")
 
 
@@ -103,6 +103,7 @@ data2.unstack(level=1).plot(kind='bar', subplots=False, ax=ax, title="Crime in S
 plt.tight_layout()
 plt.show()
 
+
 #inspiration for plot: https://www.kaggle.com/ldocao/sf-crime/exploratory-horizontal-bar-plots
 categories = df_train.groupby("Category")
 count = categories.count()
@@ -113,35 +114,13 @@ plt.tight_layout()
 plt.show()
 #plt.savefig("categories_count")
 
-#maybe we could do smth like this?
-import matplotlib.dates as mdates
-from mpl_toolkits.mplot3d import Axes3D
-matplotlib.rcParams['font.size'] = 10;
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-for z in [df_train.Year.unique()]:
-  xs = xrange(1,13)
-  ys = 1000 * np.random.rand(12)
-  color = plt.cm.Set2(random.choice(xrange(plt.cm.Set2.N)))
-  ax.bar(xs, ys,zs=z, zdir='y', color=color, alpha=0.8)
 
-ax.set_xlabel('Month')
-ax.set_ylabel('Year')
-ax.set_zlabel('Sales')
-plt.show()
 
-# Pie Chartx = 
-from pylab import *
-# start_x, start_y, width, height
-ax = axes([0.1,0.1, 0.7,0.7])
-labels = 'burglary', 'theft', 'murder', 'assult'
-x = [15, 30, 45, 10]
-# emphasis of each data
-explode = (0.1, 0.1, 0.1, 0.3)
-# autopct = position of values
-pie(x, explode, labels, autopct='%4.1f%%', startangle=67)
-title('Crimes on Mondays')
-show()
+
+
+
+
+
 
 
 
