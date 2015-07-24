@@ -4,8 +4,9 @@ from sklearn import cross_validation
 import numpy.testing as npt
 
 df = pd.read_csv("../crime_train.csv")
-# split the Dates column in order to remove
-# the data for 2015, which is incomplete
+
+# 3.1 Cleaning Data
+# split the Dates column into Year, Month, Hour
 def getYear(s):
   return s.split("-")[0]
 def getMonth(s):
@@ -18,16 +19,14 @@ df['Year']= df['Dates'].apply(lambda x: getYear(x)).apply(int)
 df['Month']= df['Dates'].apply(lambda x: getMonth(x)).apply(int)
 df['Hour']= df['Dates'].apply(lambda x: getHour(x)).apply(int)
 
-
-# remove the data for the year 2015
+# remove the data for the year 2015, which is incomplete
 df = df[df.Year != 2015]
-#test is the year 2015 was really removed
+# test is the year 2015 was really removed
 years = df.Year.unique()
-years
-# test that 2015 is no longer there
+# test that 2015 is no longer part of the dataset
 npt.assert_equal(years.max(), 2014)
 
-
+# every Category get's an ID
 Cat_num = df.Category.copy(deep=True)
 mapping = {k: v for v, k in enumerate(Cat_num.unique())}
 [Cat_num.replace(category, mapping[category] , inplace=True) for category in mapping]
@@ -47,6 +46,7 @@ npt.assert_equal(len(df), len(df_train) + len(df_test))
 # save the new training data as a file
 df_train.to_csv("../df_train.csv",  encoding='utf-8')
 
+# 3.1.2 data preparation
 #remove the crimes, which have less than 100 instances in the training data
 tmp =df_train.groupby("Category").count().sort_index(by=['Year'], ascending=[True])
 tmp = tmp.iloc[:,[0]]
@@ -56,7 +56,9 @@ df_train = df_train[df_train.Category != "PORNOGRAPHY/OBSCENE MAT"]
 df_test = df_test[df_test.Category != "TREA"]
 df_test = df_test[df_test.Category != "PORNOGRAPHY/OBSCENE MAT"]
 
+# 3.2 relevant features
 # keep only the columns that are interesting for the prediction
+# ['DayOfWeek', 'PdDistrict', 'Month', 'Hour', 'Cat_num']
 def reduce_to_relevant_columns(dataframe):
   df_reduced = dataframe.iloc[:,[3,4,10,11,12]]
   return df_reduced
