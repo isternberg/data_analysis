@@ -71,7 +71,10 @@ features = ['DayOfWeek', 'PdDistrict', 'Month', 'Hour', 'Cat_num']
 npt.assert_array_equal(features, df_train_reduced.columns)
 npt.assert_array_equal(features, df_test_reduced.columns)
 
-number_of_features = 3
+
+#number_of_features = 2    # features: 'DayOfWeek', 'PdDistrict'
+number_of_features = 3    # features: 'DayOfWeek', 'PdDistrict', 'Month'
+#number_of_features = 4    # features: 'DayOfWeek', 'PdDistrict', 'Month', 'Hour'
 '''
 replace categorical values of features with 0s and 1.
 '''
