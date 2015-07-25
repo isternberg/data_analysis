@@ -56,7 +56,7 @@ df_train = df_train[df_train.Category != "PORNOGRAPHY/OBSCENE MAT"]
 df_test = df_test[df_test.Category != "TREA"]
 df_test = df_test[df_test.Category != "PORNOGRAPHY/OBSCENE MAT"]
 
-# 3.2 Determination of relevant features
+# 3.2 Determination of relevant features -> see more at 'entropy.py'
 # keep only the columns that are interesting for the prediction
 # ['DayOfWeek', 'PdDistrict', 'Month', 'Hour', 'Cat_num']
 def reduce_to_relevant_columns(dataframe):
@@ -71,13 +71,15 @@ features = ['DayOfWeek', 'PdDistrict', 'Month', 'Hour', 'Cat_num']
 npt.assert_array_equal(features, df_train_reduced.columns)
 npt.assert_array_equal(features, df_test_reduced.columns)
 
-
-#number_of_features = 2    # features: 'DayOfWeek', 'PdDistrict'
-number_of_features = 3    # features: 'DayOfWeek', 'PdDistrict', 'Month'
-#number_of_features = 4    # features: 'DayOfWeek', 'PdDistrict', 'Month', 'Hour'
+# sorted from Information-Gain (entropy.py)
+#number_of_features = 2   # features: 'PdDistrict', 'Hour'
+number_of_features = 3    # features: 'PdDistrict', 'Hour', 'DayOfWeek'
+#number_of_features = 4   # features: 'PdDistrict', 'Hour', 'DayOfWeek', 'Month'
 '''
 replace categorical values of features with 0s and 1.
 '''
+
+# 3.2.5 Normalization
 def create_dummies(dataFrame, number_of_features):
   tmp_dist = pd.get_dummies(dataFrame['PdDistrict'])
   tmp_hour = pd.get_dummies(dataFrame['Hour'])
