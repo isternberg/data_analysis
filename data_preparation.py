@@ -73,12 +73,11 @@ npt.assert_array_equal(features, df_test_reduced.columns)
 
 '''
 determine the number of features that will be used
-for the prediction.
+for the prediction. sorted by Information-Gain (entropy.py)
 '''
 #number_of_features = 2   # features: 'PdDistrict', 'Hour'
 number_of_features = 3    # features: 'PdDistrict', 'Hour', 'DayOfWeek'
 #number_of_features = 4   # features: 'PdDistrict', 'Hour', 'DayOfWeek', 'Month'
-# sorted by Information-Gain (entropy.py)
 if number_of_features > 4 or number_of_features < 2:
     raise ValueError("The number of features must be between 2 and 4")
 '''
