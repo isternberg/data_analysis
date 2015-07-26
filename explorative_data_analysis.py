@@ -16,7 +16,7 @@ print(prostitution_row)
 # statistical data to prostitution (by day)
 print(prostitution_row.T.describe())
 
-# TODO add the threshhold of avg
+
 # Crime in San Francisco 2003 - 2014 by district
 crimes_count_by_district = df_train.groupby('PdDistrict').Category.count().to_frame()
 crimes_count_by_district.columns=["Sum_of_crimes"]
@@ -53,11 +53,10 @@ ax.set_xlabel("month")
 plt.show()
 
 
-# Corr and Cov TODO check for correctness
 ct = pd.crosstab(df_train.Year, df_train.Category)
 # quantify the strength of the relationship between drunkenness and vandalism.
 print(ct.DRUNKENNESS.corr(ct.VANDALISM)) # by default pearson
-# do drunkenness and vandalism vary together
+# how much do drunkenness and vandalism vary together
 print(ct.DRUNKENNESS.cov(ct.VANDALISM))
 
 

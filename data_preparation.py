@@ -50,7 +50,7 @@ df_train.to_csv("../df_train.csv",  encoding='utf-8')
 #remove the crimes, which have less than 100 instances in the training data
 tmp =df_train.groupby("Category").count().sort_index(by=['Year'], ascending=[True])
 tmp = tmp.iloc[:,[0]]
-print(tmp)
+# print(tmp)
 df_train = df_train[df_train.Category != "TREA"]
 df_train = df_train[df_train.Category != "PORNOGRAPHY/OBSCENE MAT"]
 df_test = df_test[df_test.Category != "TREA"]
@@ -69,7 +69,13 @@ features = ['DayOfWeek', 'PdDistrict', 'Month', 'Hour', 'Cat_num']
 npt.assert_array_equal(features, df_train_reduced.columns)
 npt.assert_array_equal(features, df_test_reduced.columns)
 
-number_of_features = 3
+'''
+Here is where we determine the number of features that will be used
+for the prediction.
+'''
+number_of_features = 4
+if number_of_features > 4 or number_of_features < 1:
+    raise ValueError("The number of features must be between 1 and 4")
 '''
 replace categorical values of features with 0s and 1.
 '''
@@ -90,10 +96,11 @@ df_test_reduced = create_dummies(df_test_reduced, number_of_features)
 
 features[0] = ['BAYVIEW','CENTRAL','INGLESIDE','MISSION','NORTHERN','PARK','RICHMOND',
         'SOUTHERN','TARAVAL','TENDERLOIN']
-features[1]= [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+features[1]= [x for x in range(0,24)] # list of all possible hours
 features[2] = ['Friday','Monday','Saturday','Sunday','Thursday','Tuesday','Wednesday']
-features[3] = [1,2,3,4,5,6,7,8, 9,10,11,12]
+features[3] = [x for x in range(1,13)] # list of all possible months
 category = ['Category']
+
 
 # test the desired columns are there after creating the dummies
 def create_cols(number_of_features):
