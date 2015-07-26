@@ -4,8 +4,9 @@ from sklearn import cross_validation
 import numpy.testing as npt
 
 df = pd.read_csv("../crime_train.csv")
-# split the Dates column in order to remove
-# the data for 2015, which is incomplete
+
+# 3.1 data preprocessing
+# split the Dates column into Year, Month, Hour
 def getYear(s):
   return s.split("-")[0]
 def getMonth(s):
@@ -18,16 +19,14 @@ df['Year']= df['Dates'].apply(lambda x: getYear(x)).apply(int)
 df['Month']= df['Dates'].apply(lambda x: getMonth(x)).apply(int)
 df['Hour']= df['Dates'].apply(lambda x: getHour(x)).apply(int)
 
-
-# remove the data for the year 2015
+# remove the data for the year 2015, which is incomplete
 df = df[df.Year != 2015]
-#test is the year 2015 was really removed
+# test is the year 2015 was really removed
 years = df.Year.unique()
-years
-# test that 2015 is no longer there
+# test that 2015 is no longer part of the dataset
 npt.assert_equal(years.max(), 2014)
 
-
+# every Category get's an ID
 Cat_num = df.Category.copy(deep=True)
 mapping = {k: v for v, k in enumerate(Cat_num.unique())}
 [Cat_num.replace(category, mapping[category] , inplace=True) for category in mapping]
@@ -47,6 +46,7 @@ npt.assert_equal(len(df), len(df_train) + len(df_test))
 # save the new training data as a file
 df_train.to_csv("../df_train.csv",  encoding='utf-8')
 
+# 3.1.3 data preparation
 #remove the crimes, which have less than 100 instances in the training data
 tmp =df_train.groupby("Category").count().sort_index(by=['Year'], ascending=[True])
 tmp = tmp.iloc[:,[0]]
@@ -56,7 +56,9 @@ df_train = df_train[df_train.Category != "PORNOGRAPHY/OBSCENE MAT"]
 df_test = df_test[df_test.Category != "TREA"]
 df_test = df_test[df_test.Category != "PORNOGRAPHY/OBSCENE MAT"]
 
+# 3.2 Determination of relevant features -> see more at 'entropy.py'
 # keep only the columns that are interesting for the prediction
+# ['DayOfWeek', 'PdDistrict', 'Month', 'Hour', 'Cat_num']
 def reduce_to_relevant_columns(dataframe):
   df_reduced = dataframe.iloc[:,[3,4,10,11,12]]
   return df_reduced
@@ -69,6 +71,7 @@ features = ['DayOfWeek', 'PdDistrict', 'Month', 'Hour', 'Cat_num']
 npt.assert_array_equal(features, df_train_reduced.columns)
 npt.assert_array_equal(features, df_test_reduced.columns)
 
+<<<<<<< HEAD
 '''
 Here is where we determine the number of features that will be used
 for the prediction.
@@ -76,9 +79,17 @@ for the prediction.
 number_of_features = 4
 if number_of_features > 4 or number_of_features < 1:
     raise ValueError("The number of features must be between 1 and 4")
+=======
+# sorted from Information-Gain (entropy.py)
+#number_of_features = 2   # features: 'PdDistrict', 'Hour'
+number_of_features = 3    # features: 'PdDistrict', 'Hour', 'DayOfWeek'
+#number_of_features = 4   # features: 'PdDistrict', 'Hour', 'DayOfWeek', 'Month'
+>>>>>>> 26851746b949f096a7627ec90ed6667d4bdc41d9
 '''
 replace categorical values of features with 0s and 1.
 '''
+
+# 3.2.5 Normalization
 def create_dummies(dataFrame, number_of_features):
   tmp_dist = pd.get_dummies(dataFrame['PdDistrict'])
   tmp_hour = pd.get_dummies(dataFrame['Hour'])
