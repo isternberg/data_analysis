@@ -5,7 +5,7 @@ import numpy.testing as npt
 
 df = pd.read_csv("../crime_train.csv")
 
-# 3.1 data preprocessing
+# 3. data preprocessing
 # split the Dates column into Year, Month, Hour
 def getYear(s):
   return s.split("-")[0]
@@ -26,7 +26,7 @@ years = df.Year.unique()
 # test that 2015 is no longer part of the dataset
 npt.assert_equal(years.max(), 2014)
 
-# every Category get's an ID
+# every Category gets an ID
 Cat_num = df.Category.copy(deep=True)
 mapping = {k: v for v, k in enumerate(Cat_num.unique())}
 [Cat_num.replace(category, mapping[category] , inplace=True) for category in mapping]
@@ -44,9 +44,10 @@ df_test = df.tail(testing_len)
 # test that now rows were added or removed
 npt.assert_equal(len(df), len(df_train) + len(df_test))
 # save the new training data as a file
+# this file would be used for the explorative data analysis
 df_train.to_csv("../df_train.csv",  encoding='utf-8')
 
-# 3.1.3 data preparation
+# 3.3 data preparation
 #remove the crimes, which have less than 100 instances in the training data
 tmp =df_train.groupby("Category").count().sort_index(by=['Year'], ascending=[True])
 tmp = tmp.iloc[:,[0]]
@@ -56,7 +57,7 @@ df_train = df_train[df_train.Category != "PORNOGRAPHY/OBSCENE MAT"]
 df_test = df_test[df_test.Category != "TREA"]
 df_test = df_test[df_test.Category != "PORNOGRAPHY/OBSCENE MAT"]
 
-# 3.2 Determination of relevant features -> see more at 'entropy.py'
+# 4.2 Determination of relevant features -> see more at 'entropy.py'
 # keep only the columns that are interesting for the prediction
 # ['DayOfWeek', 'PdDistrict', 'Month', 'Hour', 'Cat_num']
 def reduce_to_relevant_columns(dataframe):
@@ -84,7 +85,7 @@ if number_of_features > 4 or number_of_features < 2:
 replace categorical values of features with 0s and 1.
 '''
 
-# 3.2.5 Normalization
+# 4.3 Normalization
 def create_dummies(dataFrame, number_of_features):
   tmp_dist = pd.get_dummies(dataFrame['PdDistrict'])
   tmp_hour = pd.get_dummies(dataFrame['Hour'])
