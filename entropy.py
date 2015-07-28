@@ -4,6 +4,7 @@ import numpy as np
 
 df = pd.read_csv("../df_train.csv")
 
+# 3.2 Determination of relevant features
 # Following 4 functions are taken from 
 # http://christianherta.de/lehre/dataScience/machineLearning/decision-trees.php
 def p_log_p(p_):

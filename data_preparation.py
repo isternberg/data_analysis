@@ -4,8 +4,9 @@ from sklearn import cross_validation
 import numpy.testing as npt
 
 df = pd.read_csv("../crime_train.csv")
-# split the Dates column in order to remove
-# the data for 2015, which is incomplete
+
+# 3. data preprocessing
+# split the Dates column into Year, Month, Hour
 def getYear(s):
   return s.split("-")[0]
 def getMonth(s):
@@ -18,16 +19,14 @@ df['Year']= df['Dates'].apply(lambda x: getYear(x)).apply(int)
 df['Month']= df['Dates'].apply(lambda x: getMonth(x)).apply(int)
 df['Hour']= df['Dates'].apply(lambda x: getHour(x)).apply(int)
 
-
-# remove the data for the year 2015
+# remove the data for the year 2015, which is incomplete
 df = df[df.Year != 2015]
-#test is the year 2015 was really removed
+# test is the year 2015 was really removed
 years = df.Year.unique()
-years
-# test that 2015 is no longer there
+# test that 2015 is no longer part of the dataset
 npt.assert_equal(years.max(), 2014)
 
-
+# every Category get's an ID
 Cat_num = df.Category.copy(deep=True)
 mapping = {k: v for v, k in enumerate(Cat_num.unique())}
 [Cat_num.replace(category, mapping[category] , inplace=True) for category in mapping]
@@ -47,16 +46,19 @@ npt.assert_equal(len(df), len(df_train) + len(df_test))
 # save the new training data as a file
 df_train.to_csv("../df_train.csv",  encoding='utf-8')
 
+# 3.3 data preparation
 #remove the crimes, which have less than 100 instances in the training data
 tmp =df_train.groupby("Category").count().sort_index(by=['Year'], ascending=[True])
 tmp = tmp.iloc[:,[0]]
-print(tmp)
+# print(tmp)
 df_train = df_train[df_train.Category != "TREA"]
 df_train = df_train[df_train.Category != "PORNOGRAPHY/OBSCENE MAT"]
 df_test = df_test[df_test.Category != "TREA"]
 df_test = df_test[df_test.Category != "PORNOGRAPHY/OBSCENE MAT"]
 
+# 4.2 Determination of relevant features -> see more at 'entropy.py'
 # keep only the columns that are interesting for the prediction
+# ['DayOfWeek', 'PdDistrict', 'Month', 'Hour', 'Cat_num']
 def reduce_to_relevant_columns(dataframe):
   df_reduced = dataframe.iloc[:,[3,4,10,11,12]]
   return df_reduced
@@ -69,10 +71,20 @@ features = ['DayOfWeek', 'PdDistrict', 'Month', 'Hour', 'Cat_num']
 npt.assert_array_equal(features, df_train_reduced.columns)
 npt.assert_array_equal(features, df_test_reduced.columns)
 
-number_of_features = 3
+'''
+determine the number of features that will be used
+for the prediction. sorted by Information-Gain (entropy.py)
+'''
+#number_of_features = 2   # features: 'PdDistrict', 'Hour'
+number_of_features = 3    # features: 'PdDistrict', 'Hour', 'DayOfWeek'
+#number_of_features = 4   # features: 'PdDistrict', 'Hour', 'DayOfWeek', 'Month'
+if number_of_features > 4 or number_of_features < 2:
+    raise ValueError("The number of features must be between 2 and 4")
 '''
 replace categorical values of features with 0s and 1.
 '''
+
+# 4.3 Normalization
 def create_dummies(dataFrame, number_of_features):
   tmp_dist = pd.get_dummies(dataFrame['PdDistrict'])
   tmp_hour = pd.get_dummies(dataFrame['Hour'])
@@ -90,10 +102,11 @@ df_test_reduced = create_dummies(df_test_reduced, number_of_features)
 
 features[0] = ['BAYVIEW','CENTRAL','INGLESIDE','MISSION','NORTHERN','PARK','RICHMOND',
         'SOUTHERN','TARAVAL','TENDERLOIN']
-features[1]= [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+features[1]= [x for x in range(0,24)] # list of all possible hours
 features[2] = ['Friday','Monday','Saturday','Sunday','Thursday','Tuesday','Wednesday']
-features[3] = [1,2,3,4,5,6,7,8, 9,10,11,12]
+features[3] = [x for x in range(1,13)] # list of all possible months
 category = ['Category']
+
 
 # test the desired columns are there after creating the dummies
 def create_cols(number_of_features):

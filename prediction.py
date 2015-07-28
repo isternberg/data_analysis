@@ -16,10 +16,10 @@ print "Cross Validation with naive bayes:"
 print score_bayes
 
 from sklearn.ensemble import RandomForestClassifier
-rfc = RandomForestClassifier(n_estimators=100)
-# score_rfc = cross_validation.cross_val_score(rfc, dp.x_train, dp.y_train, cv=5)
-# print "Cross Validation with random forest:"
-# print score_rfc
+rfc = RandomForestClassifier() # n_estimators : integer, optional (default=10)
+score_rfc = cross_validation.cross_val_score(rfc, dp.x_train, dp.y_train, cv=5)
+print "Cross Validation with random forest:"
+print score_rfc
 
 
 # train
@@ -31,7 +31,6 @@ from sklearn.metrics import accuracy_score
 print "Accuracy of prediction with decision tree:"
 print accuracy_score(dp.y_test, prediction)  # 0.2
 print "prediction"
-print prediction
 # log_loss(dp.y_test, prediction)
 
 # train
