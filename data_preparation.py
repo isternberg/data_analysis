@@ -26,7 +26,7 @@ years = df.Year.unique()
 # test that 2015 is no longer part of the dataset
 npt.assert_equal(years.max(), 2014)
 
-# every Category get's an ID
+# every Category gets an ID
 Cat_num = df.Category.copy(deep=True)
 mapping = {k: v for v, k in enumerate(Cat_num.unique())}
 [Cat_num.replace(category, mapping[category] , inplace=True) for category in mapping]
@@ -44,6 +44,7 @@ df_test = df.tail(testing_len)
 # test that now rows were added or removed
 npt.assert_equal(len(df), len(df_train) + len(df_test))
 # save the new training data as a file
+# this file would be used for the explorative data analysis
 df_train.to_csv("../df_train.csv",  encoding='utf-8')
 
 # 3.3 data preparation
