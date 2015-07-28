@@ -23,7 +23,7 @@ crimes_count_by_district.columns=["Sum_of_crimes"]
 crimes_count_by_district.sort(columns="Sum_of_crimes",ascending=1)["Sum_of_crimes"].plot(kind="bar", 
 title='Crime in San Francisco 2003 - 2014 by district')
 plt.xlabel("district") 
-plt.ylabel("count") 
+plt.ylabel("number of criminal incidents") 
 plt.tight_layout()
 plt.show()
 
@@ -33,14 +33,14 @@ prostitution = ct.ix[23:24].T
 print(prostitution)
 print(prostitution.describe())
 ax = prostitution.plot(lw=2,colormap='jet',marker='.',markersize=10,title='Prostitution in San Francisco 2003 - 2014')
-ax.set_ylabel("count")
+ax.set_ylabel("number of criminal incidents")
 ax.set_xlabel("year")
 plt.show()
 
 # Crime in San Francisco 2003 - 2014
 crime_by_year = df_train.groupby('Year').Category.count()
 ax = crime_by_year.plot(lw=2,colormap='jet',marker='.',markersize=10,title='Crime in San Francisco 2003 - 2014')
-ax.set_ylabel("count")
+ax.set_ylabel("number of criminal incidents")
 ax.set_xlabel("year")
 pylab.ylim(40000, 70000)
 plt.show()
@@ -48,26 +48,10 @@ plt.show()
 
 crime_by_month = df_train.groupby('Month').Category.count()
 ax = crime_by_month.plot(kind='bar',title='Crime in San Francisco by month (2003-2014)')
-ax.set_ylabel("count")
+ax.set_ylabel("number of criminal incidents")
 ax.set_xlabel("month")
 plt.show()
 
-
-ct = pd.crosstab(df_train.Year, df_train.Category)
-# quantify the strength of the relationship between drunkenness and vandalism.
-print(ct.DRUNKENNESS.corr(ct.VANDALISM)) # by default pearson
-# how much do drunkenness and vandalism vary together
-print(ct.DRUNKENNESS.cov(ct.VANDALISM))
-
-
-
-ax = ct.corr().head(3).T[3:6].plot(kind='bar',colormap='jet',
-title='Correlation between different crimes (2003-2014)')
-ax.set_ylabel("correlation")
-ax.set_xlabel("category")
-pylab.ylim([-1,1])
-plt.tight_layout(pad=.8, w_pad=3, h_pad=5)# fix
-plt.show()
 
 # df['Month'] = df['Month'].apply(int)
 seasons = ['Winter', 'Spring', 'Summer', 'Fall']
@@ -80,7 +64,7 @@ groups = df_train.groupby(month_bins)
 seasons_view = groups.Category.count()
 print(seasons_view)
 ax = seasons_view.plot(kind='bar',title='Crime in San Francisco by season (2003-2014)')
-ax.set_ylabel("count")
+ax.set_ylabel("number of criminal incidents")
 ax.set_xlabel("season")
 pylab.ylim(0, 200000)
 plt.tight_layout()
@@ -89,7 +73,7 @@ plt.show()
 
 fig = pyplot.figure(figsize=(8,4))
 ax = fig.add_subplot(111)
-ax.set_ylabel("count")
+ax.set_ylabel("number of criminal incidents")
 ax.set_xlabel("season")  # how come xlabel in plot = month?
 data2.unstack(level=1).plot(kind='bar', subplots=False, ax=ax, title="Crime in San Francisco by season and day (2003-2014)")
 plt.tight_layout()
@@ -100,7 +84,7 @@ plt.show()
 categories = df_train.groupby("Category")
 count = categories.count()
 plt.figure()
-plt.xlabel("count")
+plt.xlabel("number of criminal incidents")
 count.sort(columns="X",ascending=1)["X"].plot(kind="barh", title="Crime in San Francisco Category Count (2003-2014)")
 plt.tight_layout() 
 plt.show()
